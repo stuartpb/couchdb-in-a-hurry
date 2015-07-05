@@ -30,6 +30,8 @@ Database names can be any string that matches the expression `^[a-z][a-z0-9_$()+
 
 Document IDs may be any arbitrary string, though the normal convention is to use unhyphenated hexadecimal random UUIDs (this is what PouchDB and CouchDB generate by default). Not using random IDs can lead the B-Tree which holds the documents of a database to grow unbalanced.
 
+Also, note that documents with underscore-prefixed IDs are used for special kinds of document (such as "design documents", the server-side code structure described below, whose IDs begin with `_design/`).
+
 ## CouchDB's interaction model
 
 CouchDB works as a node you do create-read-update-delete operations with, that can then do those operations in turn when replicating data to other nodes. It does a bit of limited revision tracking to handle conflicts when receiving operations or replicating, which is what lets CouchDB be distributed and fault-tolerant (when two nodes disagree on something, CouchDB marks the conflict by setting a value in the document's `_conflict` field and stores both of the disagreeing histories until you resolve that conflict).
@@ -62,7 +64,7 @@ Creating and updating documents in CouchDB is done with PUT operations to the do
 
 (You can also POST the document to the *database's* route, in which case CouchDB will generate a UUID for you; however, since pre-generating your UUID means you're safe from inadvertently creating the document twice, it's recommended that code pre-calculate UUIDs and use PUT for creation.)
 
-Databases are the first-level paths of CouchDB servers. All paths that interact with documents start with the name of the database in which that document resides (or will reside).
+Databases are the first-level paths of CouchDB servers (where the path starts with `/[a-z]` and not `/_`). All paths that interact with documents start with the name of the database in which that document resides (or will reside).
 
 You create databases in a similar fashion to the way you create documents, with a PUT to the database name (no body in the request, a status object for the response).
 
