@@ -10,9 +10,9 @@ I'm writing this as I learn CouchDB, so if something isn't clear in this documen
 
 ## A couple observations up front
 
-CouchDB almost works more like a remote app than it does a traditional database. CouchDB is very much a model one designs an app around, rather than a system you use to model your app: if the CouchDB model doesn't match the way your app thinks of data, you should use a different system to express that model.
+CouchDB works like a standalone data service, rather than a dumb backing store to build structure on top of. CouchDB is very much a model one designs an app around, rather than a system you use to model your app: if the CouchDB model doesn't match the way your app thinks of data, you should use a different system to express that model.
 
-CouchDB is a natural model for apps where users have their own documents, which should be shared between locations (ie. across their own machines), with reasonably quick (~10 seconds) synchronization. This matches a lot of common app patterns (ie. most of what would traditionally be done with a "native" app on desktop or mobile), but there are many apps on the Internet that do not cleanly fit this model (especially entailing real-time interaction). For those apps, you're better off building your own API (possibly taking a few cues from CouchDB), backed by a datastore whose feature set would better allow you to express the app's model.
+CouchDB is a natural base for apps where users have their own documents, which should be shared between locations (ie. across their own machines), with reasonably quick (~10 seconds) synchronization. This matches a lot of common app patterns (ie. most of what would traditionally be done with a "native" app on desktop or mobile), but there are many apps on the Internet that do not cleanly fit this model (especially entailing real-time interaction). For those apps, you're better off building your own API (possibly taking a few cues from CouchDB), backed by a datastore whose feature set would better allow you to express the app's model.
 
 ## CouchDB's data model
 
