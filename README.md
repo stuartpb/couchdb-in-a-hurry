@@ -1,10 +1,8 @@
 # CouchDB in a Hurry: for devs without time to relax
 
-This guide is about breezing through the high-level questions a developer, possibly familiar with how other database systems are traditionally used in web development, would need answered before being able to understand the average guide describing how to do something using CouchDB (and consequently with PouchDB).
+This guide is about breezing through the high-level questions a developer, possibly familiar with how other database systems are traditionally used in web development, would need answered before being able to understand the average guide describing how to do something using CouchDB (and consequently with PouchDB). It puts special focus on clearing up the bits that would appear to be contradictory, especially preconceptions based on the way things work in other databases.
 
-It gives special focus to answering questions raised by statements that would seem to contradict other things you know (or might think you know) about the system, especially regarding preconceptions you might have based on the way things work in other databases.
-
-I wrote it because other CouchDB guides tend to miss the middle ground between "recapping things you already know in excruciatingly boring detail" and "assuming you are already a CouchDB contributor" (especially regarding the aforementioned type of question), which is especially frustrating when you care more about learning to use PouchDB than reading a page and a half explaining how `curl` does HTTP requests.
+I wrote it because other CouchDB guides tend to miss the middle ground between "recapping things you already know in excruciatingly boring detail" and "assuming you are already a CouchDB contributor" (especially when it comes to resolving apparent contradictions), which is especially frustrating when you care more about learning to use PouchDB than reading a page and a half explaining how `curl` does HTTP requests.
 
 This guide does cover things that only matter to CouchDB, but mostly only in a sense so you can understand how PouchDB relates to CouchDB in production (specifically why using PouchDB works like your user is the only one in the world). I specifically note where things don't apply when working with PouchDB, so you can skip over them when you're just trying to first grok the CouchDB paradigm, if you don't care how this stuff is modeled outside of PouchDB.
 
