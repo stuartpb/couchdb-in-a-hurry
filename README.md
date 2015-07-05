@@ -58,7 +58,7 @@ Administrator accounts (which only get used when initializing your app's model) 
 
 Creating and updating documents in CouchDB is done with PUT operations to the document's name (under the database name, ie. after the database name plus a slash) with JSON bodies (the name you pick will implicitly be the `_id` of the doc). When you create a document with PUT, you have to come up with a name first; this is why it's recommended (but not forced) that you use non-colliding random UUIDs to generate your document IDs.
 
-(You can also POST the document to the *database's* route, in which case CouchDB will generate a UUID for you; however, since pre-generating your UUID means you're safe from inadvertently creating the document twice, it's recommeded that code pre-calculate UUIDs and use PUT for creation.)
+(You can also POST the document to the *database's* route, in which case CouchDB will generate a UUID for you; however, since pre-generating your UUID means you're safe from inadvertently creating the document twice, it's recommended that code pre-calculate UUIDs and use PUT for creation.)
 
 You create databases in a similar fashion to the way you create documents, with a PUT to the database name (no body in the request, a status object for the response).
 
