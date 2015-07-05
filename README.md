@@ -76,21 +76,19 @@ Design documents are special documents in a database where you use an ID (`_id` 
 
 (While design documents have a slash in their ID, the `/` after `_design` in a design document's ID is the *only* place in CouchDB where a slash in an identifier can be used *without* having to encode it as `%2F`.)
 
-Design docs use **non**-underscore-prefixed fields (since these fields are data about the design, not the document) to specify various pieces of functionality related to an app's use of the database.
+## Writing and using design docs
 
-Design documents get their own special REST routes (as underscore-prefixed sub-paths) for executing the functionalities they define, such as (for a view called `hotbaz`, specified in a design doc called `barapp`, in a database called `foodata`) `/foodata/_design/barapp/_view/hotbaz`.
+For writing, design docs use **non**-underscore-prefixed fields (since these fields are data about the design, not the document) for various functions related to an app's use of the database, where the values of these fields are most often strings specifying the code for those functions (or variations on that, like the name of a standard function, or the filename of a support library).
 
-### Code for these functionalities
+Out of the box, CouchDB comes with support for writing these functions in JavaScript. (There are apparently mechanisms to support other languages, but it's probably best to stick with JS, which you know will be well-supported no matter what your CouchDB setup.)
 
-CouchDB comes with JavaScript support for design documents. There are apparently mechanisms to support other languages, but I can't speak to their efficacy.
-
-Anyway, functionality in CouchDB design documents is specified with fields where the value is a string containing the code for a JavaScript function that produces the desired value.
-
-This code is only allowed to be thread-safe, with no side effects (akin to a function you'd write for use in a Worker in front-end JavaScript).
+For use, design documents get their own special REST routes (as sub-paths which **are** underscore-prefixed) for executing the functionalities they define, such as (for a view called `hotbaz`, specified in a design doc called `barapp`, in a database called `foodata`) `/foodata/_design/barapp/_view/hotbaz`.
 
 ### Views
 
 Views are map functions, optionally paired with a reduce function, that work kind of like stored queries that are calculated every time a document in the database is added or updated. They map well to uses of data in an app, where the app always wants a certain aspect of the data in a certain way (like a calendar overview, where the app always wants the names and dates of all the user's events taking place in a certain month).
+
+This code is only allowed to be thread-safe, with no side effects (akin to a function you'd write for use in a Worker in front-end JavaScript).
 
 ### Document validation
 
