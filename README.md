@@ -62,7 +62,7 @@ Administrator accounts (which only get used when initializing your app's model) 
 
 Creating and updating documents in CouchDB is done with PUT operations to the document's name (under the database name, ie. after the database name plus a slash) with JSON bodies (the name you pick will implicitly be the `_id` of the doc). When you create a document with PUT, you have to come up with a name first; this is why it's recommended (but not forced) that you use non-colliding random UUIDs to generate your document IDs.
 
-(You can also POST the document to the *database's* route, in which case CouchDB will generate a UUID for you; however, since pre-generating your UUID means you're safe from inadvertently creating the document twice, it's recommended that code pre-calculate UUIDs and use PUT for creation.)
+(You can also POST the document to the *database's* route, in which case CouchDB will generate a UUID for you; however, since pre-generating your UUID means you're safe from inadvertently creating the document twice if something between you and the database ends up re-submitting your POST, it's recommended that code pre-calculate UUIDs and use PUT for creation.)
 
 Databases are the first-level paths of CouchDB servers (where the path starts with `/[a-z]` and not `/_`). All paths that interact with documents start with the name of the database in which that document resides (or will reside).
 
@@ -98,7 +98,7 @@ Views are map functions, optionally paired with a reduce function, that work kin
 
 This code is only allowed to be thread-safe, with no side effects (akin to a function you'd write for use in a Worker in front-end JavaScript).
 
-### Document validation
+### Validation functions
 
 There's a field on design docs called `validate_design_update`, which can be used to avoid endpoints flooding their databases with a bunch of bogus documents.
 
