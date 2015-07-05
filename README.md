@@ -71,3 +71,9 @@ You create databases in PouchDB with `var db = new PouchDB('name-of-the-database
 CouchDB provides a mechanism for "attachments", keeping files alongside a document: they work essentially like the document is a directory in the database, and you push files inside that document-directory.
 
 In general, though, [you're better off keeping your files somewhere else](http://pouchdb.com/2014/06/17/12-pro-tips-for-better-code-with-pouchdb.html).
+
+## Shows / lists
+
+CouchDB provides a mechanism for rendering documents in a different format for JSON. You can technically use this to render pages, but you shouldn't: CouchDB should only be used for data. If you have an app that needs to render static pages with a template, you should do that rendering using seomthing like a Node.JS server that gets its backing data by requesting it as JSON from the CouchDB database. (Anyway, CouchDB is generally a better fit for the types of app where this kind of server-side rendering doesn't make sense.)
+
+Showing is more for things like converting a document to another serialization format, like CSV.
