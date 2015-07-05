@@ -18,6 +18,8 @@ Also, CouchDB is one of those projects, like C++ or the Apache web server, where
 
 ## CouchDB's data model
 
+(I'm assuming you're familiar with what JSON is and how you generally interact with it.)
+
 Like MongoDB or RethinkDB, CouchDB holds collections of JSON documents. CouchDB uses a few special fields on documents, with underscore-prefixed fixed names, for its own metadata, the values of some of which (`_id`) are more malleable/relevant for apps' use than others (`_rev`).
 
 Documents are kept in *databases*, which are basically buckets. Databases in CouchDB are cheap (growing to keep hundreds of thousands of them in an app is not uncommon), and less resemble "databases" (in the sense that other systems usually use the word) than they do collections, tables, instances, or shards.
@@ -60,6 +62,8 @@ Creating and updating documents in CouchDB is done with PUT operations to the do
 
 (You can also POST the document to the *database's* route, in which case CouchDB will generate a UUID for you; however, since pre-generating your UUID means you're safe from inadvertently creating the document twice, it's recommended that code pre-calculate UUIDs and use PUT for creation.)
 
+Databases are the first-level paths of CouchDB servers. All paths that interact with documents start with the name of the database in which that document resides (or will reside).
+
 You create databases in a similar fashion to the way you create documents, with a PUT to the database name (no body in the request, a status object for the response).
 
 CouchDB's API returns JSON responses, though they only get returned as `application/json` if you make your request with an Accept header that matches it. (Otherwise it comes back as `text/plain`, mostly so, when debugging, making a request in a browser tab will display the response as text.)
@@ -70,19 +74,21 @@ CouchDB's API returns JSON responses, though they only get returned as `applicat
 
 You create databases in PouchDB with `var db = new PouchDB('name-of-the-database')`. You create and update documents in that database with `db.put(doc)`, and get them with `db.get(docId)`.
 
-## Design documents
+## Design documents: for the server-side code your apps need
 
-Design documents are special documents in a database where you use an ID (`_id` or URL component depending on API) of `_design/` + the design document's name. A design document generally corresponds with the codebase for an app: each app that uses the database would keep its own design document on the database.
+Design documents are special documents in a database where you use an ID (`_id` or URL component depending on API) of `_design/` + the design document's name. When you put a document in a database with an ID like that, CouchDB will let you interact with the database in special ways defined by that document.
 
-(While design documents have a slash in their ID, the `/` after `_design` in a design document's ID is the *only* place in CouchDB where a slash in an identifier can be used *without* having to encode it as `%2F`.)
+(While design documents have a slash in their ID, the `/` after `_design` in a design document's ID is the *only* place in CouchDB where a slash in an identifier can be part of the HTTP path *without* having to encode it as `%2F`.)
 
-## Writing and using design docs
+A design document generally corresponds with the codebase for an app: each app that uses the database would keep its own design document on the database.
+
+### Writing and using design docs
 
 For writing, design docs use **non**-underscore-prefixed fields (since these fields are data about the design, not the document) for various functions related to an app's use of the database, where the values of these fields are most often strings specifying the code for those functions (or variations on that, like the name of a standard function, or the filename of a support library).
 
 Out of the box, CouchDB comes with support for writing these functions in JavaScript. (There are apparently mechanisms to support other languages, but it's probably best to stick with JS, which you know will be well-supported no matter what your CouchDB setup.)
 
-For use, design documents get their own special REST routes (as sub-paths which **are** underscore-prefixed) for executing the functionalities they define, such as (for a view called `hotbaz`, specified in a design doc called `barapp`, in a database called `foodata`) `/foodata/_design/barapp/_view/hotbaz`.
+For use, design documents get their own special REST routes (as sub-paths which **are** underscore-prefixed) for executing the functionalities they define, such as (for a view called `hotbaz`, specified in a design doc called `barapp`, in a database called `foodata`) `/foodata/_design/barapp/_view/hotbaz`. This will execute the view specified by code in the `view.hotbaz` field of the `_design/barapp` document.
 
 ### Views
 
