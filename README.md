@@ -14,6 +14,8 @@ CouchDB works like a standalone data service, rather than a dumb backing store t
 
 CouchDB is a natural base for apps where users have their own documents, which should be shared between locations (ie. across their own machines), with reasonably quick (~10 seconds) synchronization. This matches a lot of common app patterns (ie. most of what would traditionally be done with a "native" app on desktop or mobile), but there are many apps on the Internet that do not cleanly fit this model (especially entailing real-time interaction). For those apps, you're better off building your own API (possibly taking a few cues from CouchDB), backed by a datastore whose feature set would better allow you to express the app's model.
 
+Also, CouchDB is one of those projects, like C++ or the Apache web server, where several different parties have implemented their own extensions to do specific things they wanted, which were then incorporated into the main project with little to no regard for how they make sense in the presence of other features. There are more than a few things you'll find that seem like cool ideas from a limited perspective, but turn out to be restrictive or actively harmful in the greater scheme of things.
+
 ## CouchDB's data model
 
 Like MongoDB or RethinkDB, CouchDB holds collections of JSON documents. CouchDB uses a few special fields on documents, with underscore-prefixed fixed names, for its own metadata, the values of some of which (`_id`) are more malleable/relevant for apps' use than others (`_rev`).
@@ -33,6 +35,8 @@ CouchDB works as a node you do create-read-update-delete operations with, that c
 Data interactions match traditional REST semantics as closely as they can; replication is triggered via an RPC-like POST with a JSON body of named `source` and `target` arguments.
 
 ### Replicating
+
+Replication is essentially *the* data transfer mechanism in CouchDB, especially in scenarios like PouchDB where you operate on a local database that live-replicates to CouchDB when connected to the Internet.
 
 Both `source` and `target` may refer to either local or remote databases, meaning a CouchDB server can push its data to another server, pull data from another server, push data from one local database to another, or coordinate a replication between two remote databases (on one remote server or two).
 
@@ -66,13 +70,49 @@ CouchDB's API returns JSON responses, though they only get returned as `applicat
 
 You create databases in PouchDB with `var db = new PouchDB('name-of-the-database')`. You create and update documents in that database with `db.put(doc)`, and get them with `db.get(docId)`.
 
-## Attachments
+## Design documents
+
+Design documents are special documents in a database where you use an ID (`_id` or URL component depending on API) of `_design/` + the design document's name. A design document generally corresponds with the codebase for an app: each app that uses the database would keep its own design document on the database.
+
+(While design documents have a slash in their ID, the `/` after `_design` in a design document's ID is the *only* place in CouchDB where a slash in an identifier can be used *without* having to encode it as `%2F`.)
+
+Design docs use **non**-underscore-prefixed fields (since these fields are data about the design, not the document) to specify various pieces of functionality related to an app's use of the database.
+
+Design documents get their own special REST routes (as underscore-prefixed sub-paths) for executing the functionalities they define, such as (for a view called `hotbaz`, specified in a design doc called `barapp`, in a database called `foodata`) `/foodata/_design/barapp/_view/hotbaz`.
+
+### Code for these functionalities
+
+CouchDB comes with JavaScript support for design documents. There are apparently mechanisms to support other languages, but I can't speak to their efficacy.
+
+Anyway, functionality in CouchDB design documents is specified with fields where the value is a string containing the code for a JavaScript function that produces the desired value.
+
+This code is only allowed to be thread-safe, with no side effects (akin to a function you'd write for use in a Worker in front-end JavaScript).
+
+### Views
+
+Views are map functions, optionally paired with a reduce function, that work kind of like stored queries that are calculated every time a document in the database is updated. They map well to uses of data in an app, where the app always wants a certain aspect of the data in a certain way (like a calendar overview, where the app always wants the names and dates of all the user's events taking place in a certain month).
+
+### Document validation
+
+There's a field on design docs called `validate_design_update`, which can be used to avoid endpoints flooding their databases with a bunch of bogus documents.
+
+## Provisioning / initializing new databases
+
+This is one of the places where CouchDB doesn't really have a good solution yet. There's a page in the PouchDB docs that suggests a list of CouchDB provisioning daemons that can handle creating new restricted databases for new users.
+
+## Revision history
+
+A document's revision history is for handling conflicts in replication. This is the only purpose it should be used for. If you want to store actual document history, you should store it as a first-class value, either as a single document or as a series of documents representing each change (depending on how you use this history).
+
+## Stuff you should use sparingly, if at all
+
+### Attachments
 
 CouchDB provides a mechanism for "attachments", keeping files alongside a document: they work essentially like the document is a directory in the database, and you push files inside that document-directory.
 
 In general, though, [you're better off keeping your files somewhere else](http://pouchdb.com/2014/06/17/12-pro-tips-for-better-code-with-pouchdb.html).
 
-## Shows / lists
+### Shows / lists
 
 CouchDB provides a mechanism for rendering documents in a different format for JSON. You can technically use this to render pages, but you shouldn't: CouchDB should only be used for data. If you have an app that needs to render static pages with a template, you should do that rendering using seomthing like a Node.JS server that gets its backing data by requesting it as JSON from the CouchDB database. (Anyway, CouchDB is generally a better fit for the types of app where this kind of server-side rendering doesn't make sense.)
 
