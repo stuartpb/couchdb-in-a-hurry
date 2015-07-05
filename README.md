@@ -1,6 +1,6 @@
 # CouchDB in a Hurry: for devs without time to relax
 
-This guide is about breezing through the high-level questions a developer, possibly familiar with how other database systems are traditionally used in web development, would need answered before being able to understand a guide describing how to do something using CouchDB (and consequently with PouchDB).
+This guide is about breezing through the high-level questions a developer, possibly familiar with how other database systems are traditionally used in web development, would need answered before being able to understand the average guide describing how to do something using CouchDB (and consequently with PouchDB).
 
 It gives special focus to answering questions raised by statements that would seem to contradict other aspects of the system (like database names allowing `/` when the REST API uses `/` to separate the database name from the document `_id`), especially regarding preconceptions you might have based on the way things work in other databases.
 
