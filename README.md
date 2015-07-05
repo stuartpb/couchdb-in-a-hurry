@@ -90,7 +90,7 @@ This code is only allowed to be thread-safe, with no side effects (akin to a fun
 
 ### Views
 
-Views are map functions, optionally paired with a reduce function, that work kind of like stored queries that are calculated every time a document in the database is updated. They map well to uses of data in an app, where the app always wants a certain aspect of the data in a certain way (like a calendar overview, where the app always wants the names and dates of all the user's events taking place in a certain month).
+Views are map functions, optionally paired with a reduce function, that work kind of like stored queries that are calculated every time a document in the database is added or updated. They map well to uses of data in an app, where the app always wants a certain aspect of the data in a certain way (like a calendar overview, where the app always wants the names and dates of all the user's events taking place in a certain month).
 
 ### Document validation
 
