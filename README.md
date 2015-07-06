@@ -141,6 +141,16 @@ In general, though, [you're better off keeping your files somewhere else](http:/
 
 ### Shows / lists
 
-CouchDB provides a mechanism for rendering documents in a different format for JSON. You can technically use this to render pages, but you shouldn't: CouchDB should only be used for data. If you have an app that needs to render static pages with a template, you should do that rendering using seomthing like a Node.JS server that gets its backing data by requesting it as JSON from the CouchDB database. (Anyway, CouchDB is generally a better fit for the types of app where this kind of server-side rendering doesn't make sense.)
+CouchDB provides a mechanism for rendering documents in a different format for JSON. You can technically use this to render pages, but you shouldn't: CouchDB should only be used for data. (See the note below on CouchApp.)
 
-Showing is more for things like converting a document to another serialization format, like CSV.
+The single-document version of this is `shows`; the multi-document version of this is `lists`.
+
+Show/list should only be used for things like converting a document/documents to another serialization format, like CSV (which you generally don't need).
+
+### CouchApp
+
+CouchApp is this complex overlay that lets you do stuff like build really complex `show` items on a design doc. It's a confusion of concerns, and a kind of hacky one at that. You're better off ignoring it.
+
+Developing JS page renderers with CouchApp is basically an alternative to developing for Node.JS, which has a much more active development community, a much more robust model for constructing servers, and can be scaled indepenently of your database. That's why, if you have an app that needs to render static pages with a template, you should do that rendering using a server like Node that gets its backing data by requesting it as JSON from the CouchDB database using views.
+
+Anyway, CouchDB is generally a better fit for the types of app where this kind of server-side rendering doesn't make sense (where your pages are *truly static* HTML, with client-side JS that queries the database via XHR/fetch).
