@@ -52,7 +52,7 @@ Multiple databases on one CouchDB server have basically the same indepedent inte
 
 (This only applies in PouchDB when you're working with a remote CouchDB server.)
 
-User accounts in CouchDB actually match up to end users in an app (unlike most other database systems you'd use in web development, in which first-class user accounts usually entail a single user for the app's server use for all operations).
+User accounts in CouchDB actually match up to end users in an app (unlike most other database systems you'd use in web development, in which first-class user accounts usually entail a single user for the app's server to use for all operations).
 
 Administrator accounts (which only get used when initializing your app's model) get saved in the server's `local.ini` file rather than the database; they can still be manipulated with REST requests, though after creating the first admin account, all further requests that require admin permissions (namely, further editing admin accounts / permissions) will require admin credentials (with no admin accounts specified, the server treats all requests as admin requests, in what is called "Admin Party" mode).
 
@@ -98,7 +98,16 @@ For use, design documents get their own special REST routes (as sub-paths which 
 
 Views are map functions, optionally paired with a reduce function, that work kind of like stored queries that are calculated every time a document in the database is added or updated. They map well to uses of data in an app, where the app always wants a certain aspect of the data in a certain way (like a calendar overview, where the app always wants the names and dates of all the user's events taking place in a certain month).
 
-This code is only allowed to be thread-safe, with no side effects (akin to a function you'd write for use in a Worker in front-end JavaScript).
+This code is only allowed to be thread-safe, with no side effects (akin to a function you'd write for use in a Worker in front-end JavaScript). This is because map functions can and will be run in parallel for each document.
+
+Map functions work for a combination of things you commonly need to do with data:
+
+- Selecting for only certain documents in the database
+- Deriving values out of a document (eg. emitting every hashtag used in the document)
+- Pivoting documents based on a value (ie. creating secondary indices)
+- Plucking only certain fields from a document
+
+A reduce function is for when you want to get a *single document/value* based on a range of emitted documents from the map function.
 
 ### Validation functions
 
