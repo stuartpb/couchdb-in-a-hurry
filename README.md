@@ -154,3 +154,5 @@ CouchApp is this complex overlay that lets you do stuff like build really comple
 Developing JS page renderers with CouchApp is basically an alternative to developing for Node.JS, which has a much more active development community, a much more robust model for constructing servers, and can be scaled indepenently of your database. That's why, if you have an app that needs to render static pages with a template, you should do that rendering using a server like Node that gets its backing data by requesting it as JSON from the CouchDB database using views.
 
 Anyway, CouchDB is generally a better fit for the types of app where this kind of server-side rendering doesn't make sense (where your pages are *truly static* HTML, with client-side JS that queries the database via XHR/fetch).
+
+In other words, CouchDB works best when you treat it as a data provider that always provides its data as objectts to some kind of separately-rendering node, whether that node be implemented as a standalone Node process or as a client's browser.
