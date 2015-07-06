@@ -86,6 +86,8 @@ Design documents are special documents in a database where you use an ID (`_id` 
 
 A design document generally corresponds with the codebase for an app: each app that uses the database would keep its own design document on the database.
 
+(It seems to me like design docs make about as much sense if you treat each type of document as having its own design doc, with the things you use that type for as its views, plus an "overall" design doc for validating that documents fit within this structure and for views that might cross types. But that's just me, and I haven't heard anything supporting that notion.)
+
 ### Writing and using design docs
 
 For writing, design docs use **non**-underscore-prefixed fields (since these fields are data about the design, not the document) for various functions related to an app's use of the database, where the values of these fields are most often strings specifying the code for those functions (or variations on that, like the name of a standard function, or the filename of a support library).
@@ -111,7 +113,15 @@ A reduce function is for when you want to get a *single document/value* based on
 
 ### Validation functions
 
-There's a field on design docs called `validate_design_update`, which can be used to avoid endpoints flooding their databases with a bunch of bogus documents.
+There's a field on design docs called `validate_doc_update`, which contains the source for a function (like the `map` and `reduce` fields on views) that gets applied for every document creation or change (including those coming from replication).
+
+When one of these creations or changes happen, the `validate_doc_update` function for every design document in the DB is run on the incoming document (in an undefined order), and if any of these design documents' validation functions reject the document, the doc is rejected.
+
+Validation functions aren't applied when creating/changing design documents themselves (because that would be crazy).
+
+The function takes the parameters `(newDoc, oldDoc, userCtx)`, where `newDoc` is the document coming in, `oldDoc` is any previous revision of the document (if we have any), and `userCtx` is a context of data for the user that somehow comes from CouchDB's pluggable authentication system.
+
+Validation functions can make their checks, rejecting documents that are structurally incorrect with `throw({forbidden:'Message explaining why the given document was not valid'})`, and documents that are just not acceptable for the given user as `throw({unauthorized:'Message explaining why this user cannot be trusted'})`
 
 ## Provisioning / initializing new databases
 
