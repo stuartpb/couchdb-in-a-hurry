@@ -24,6 +24,8 @@ Like MongoDB or RethinkDB, CouchDB holds collections of JSON documents. CouchDB 
 
 Documents are kept in *databases*, which are basically buckets. Databases in CouchDB are cheap (growing to keep hundreds of thousands of them in an app is not uncommon), and less resemble "databases" (in the sense that other systems usually use the word) than they do collections, tables, instances, or shards.
 
+CouchDB databases often contain several different types of document, using *views* defined by *design documents* (explained below) to filter and interact with collections of a single type of document - as such, views often serve the purpose of a collection or table in other systems (the database then serving as a unit for purposes of replication and authorization).
+
 The way CouchDB models access/ownership, each user or group of users usually have their own database or databases (which is why you can create and replicate from a local PouchDB database to a remote CouchDB database without it getting weird).
 
 Database names can be any string that matches the expression `^[a-z][a-z0-9_$()+/-]*$`, though using a database name with `/` in it will entail percent-escaping that slash in URLs for CouchDB's HTTP API (to distinguish it from the slash separating the database name from a document name).
