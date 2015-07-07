@@ -32,7 +32,7 @@ Database names can be any string that matches the expression `^[a-z][a-z0-9_$()+
 
 Document IDs may be any arbitrary string, though the normal convention is to use unhyphenated hexadecimal random UUIDs (this is what PouchDB and CouchDB generate by default). Not using random IDs can lead the B-Tree which holds the documents of a database to grow unbalanced.
 
-Also, note that documents with underscore-prefixed IDs are used for special kinds of document (such as "design documents", the server-side code structure described below, whose IDs begin with `_design/`).
+Also, note that documents with underscore-prefixed IDs are used for special kinds of document (such as "design documents", the server-side code structure described below, whose IDs begin with `_design/`, or the `_security` document in each database, which controls access to the database and is not versioned).
 
 ## CouchDB's interaction model
 
