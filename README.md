@@ -127,9 +127,11 @@ When one of these creations or changes happen, the `validate_doc_update` functio
 
 Validation functions aren't applied when creating/changing design documents themselves (because that would be crazy).
 
-The function takes the parameters `(newDoc, oldDoc, userCtx)`, where `newDoc` is the document coming in, `oldDoc` is any previous revision of the document (if we have any), and `userCtx` is a context of data for the user that somehow comes from CouchDB's pluggable authentication system.
+The function takes the parameters `(newDoc, oldDoc, userCtx, secObj)`, where `newDoc` is the document coming in, `oldDoc` is any previous revision of the document (if we have any), `userCtx` is a context of data for the user that somehow comes from CouchDB's pluggable authentication system, and `secObj` is the object defined by the database's `_security` document.
 
-Validation functions can make their checks, rejecting documents that are structurally incorrect with `throw({forbidden:'Message explaining why the given document was not valid'})`, and documents that are just not acceptable for the given user as `throw({unauthorized:'Message explaining why this user cannot be trusted'})`
+Validation functions can make their checks, rejecting documents that are structurally incorrect with `throw({forbidden:'Message explaining why the given document was not valid'})`, and documents that are just not acceptable for the given user as `throw({unauthorized:'Message explaining why this user cannot be trusted'})`.
+
+See [the official documentation for validation functions](http://docs.couchdb.org/en/latest/couchapp/ddocs.html#validate-document-update-functions).
 
 ## Provisioning / initializing new databases
 
