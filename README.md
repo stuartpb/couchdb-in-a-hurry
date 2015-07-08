@@ -38,11 +38,15 @@ Also, note that documents with underscore-prefixed IDs are used for special kind
 
 CouchDB works as a node you do create-read-update-delete operations with, that can then do those operations in turn when replicating data to other nodes. It does a bit of limited revision tracking to handle conflicts when receiving operations or replicating, which is what lets CouchDB be distributed and fault-tolerant (when two nodes disagree on something, CouchDB marks the conflict by setting a value in the document's `_conflict` field and stores both of the disagreeing histories until you resolve that conflict).
 
-Data interactions match traditional REST semantics as closely as they can; replication is triggered via an RPC-like POST with a JSON body of named `source` and `target` arguments.
+Database and document manipulation loosely follow the REST semantics of HTTP verbs (GET retrieves the content of a document, PUT uploads a new version of that document), with a few extra details governing their behavior based on the content (like rejecting PUTs that don't pass validation, or don't have a `_rev` field matching the DB's current revision) or query-string parameters.
+
+CouchDB uses this document manipulation model for mechanisms that are well-described by first-class documents using special IDs, like design and security documents (as mentioned above). Some of these special documents have exceptions in the way they are manipulated (such as `_security` not having a `_rev` field, or `_design/` documents not being subject to validation).
+
+Other types of interactions follow their own HTTP semantics: for example, replication is triggered via an RPC-like POST to `/_replicate` with a JSON body of named `source` and `target` arguments.
 
 ### Replicating
 
-Replication is essentially *the* data transfer mechanism in CouchDB, especially in scenarios like PouchDB where you operate on a local database that live-replicates to CouchDB when connected to the Internet.
+Replication is essentially *the* data transfer mechanism in CouchDB, especially in scenarios like PouchDB where you operate on a local database that live-replicates to CouchDB when connected to the Internet. (CouchDB has always been designed around replicating with a "local" instance of CouchDB; it just wasn't well-practiced or feasible for web apps before PouchDB.)
 
 Both `source` and `target` may refer to either local or remote databases, meaning a CouchDB server can push its data to another server, pull data from another server, push data from one local database to another, or coordinate a replication between two remote databases (on one remote server or two).
 
@@ -98,7 +102,7 @@ For use, design documents get their own special REST routes (as sub-paths which 
 
 ### Views
 
-Views are map functions, optionally paired with a reduce function, that work kind of like stored queries that are calculated every time a document in the database is added or updated. They map well to uses of data in an app, where the app always wants a certain aspect of the data in a certain way (like a calendar overview, where the app always wants the names and dates of all the user's events taking place in a certain month).
+Views are map functions, optionally paired with a reduce function, that work kind of like secondary indexes / stored queries that are calculated every time a document in the database is added or updated. They map well to uses of data in an app, where the app always wants a certain aspect of the data in a certain way (like a calendar overview, where the app always wants the names and dates of all the user's events taking place in a certain month).
 
 This code is only allowed to be thread-safe, with no side effects (akin to a function you'd write for use in a Worker in front-end JavaScript). This is because map functions can and will be run in parallel for each document.
 
@@ -109,7 +113,11 @@ Map functions work for a combination of things you commonly need to do with data
 - Pivoting documents based on a value (ie. creating secondary indices)
 - Plucking only certain fields from a document
 
-A reduce function is for when you want to get a *single document/value* based on a range of emitted documents from the map function.
+A reduce function is for when you want to get a *single document or value* based on a range of emitted documents from the map function.
+
+#### Creating a secondary index with views
+
+Basically, do `emit(index_value, null)`, then do `include_docs=true` when querying the view. `emit` always includes the document's `_id` inherently, and doing `include_docs=true` makes the database retrieve those docs based on these lightweight collation records from their existing point of storage, rather than keeping dupicates of them attached to the view. See [the official docs on collation](http://docs.couchdb.org/en/latest/couchapp/views/collation.html).
 
 ### Validation functions
 
@@ -143,7 +151,7 @@ In general, though, [you're better off keeping your files somewhere else](http:/
 
 CouchDB provides a mechanism for rendering documents in a different format for JSON. You can technically use this to render pages, but you shouldn't: CouchDB should only be used for data. (See the note below on CouchApp.)
 
-The single-document version of this is `shows`; the multi-document version of this is `lists`.
+`shows` applies these transformation functions to individual documents; `lists` is the same thing, but on top of `views`.
 
 Show/list should only be used for things like converting a document/documents to another serialization format, like CSV (which you generally don't need).
 
