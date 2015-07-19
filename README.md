@@ -14,6 +14,8 @@ CouchDB works like a standalone data service, rather than a dumb backing store t
 
 CouchDB is a natural base for apps where users have their own documents, which should be shared between locations (ie. across their own machines), with reasonably quick (~10 seconds) synchronization. This matches a lot of common app patterns (ie. most of what would traditionally be done with a "native" app on desktop or mobile), but there are many apps on the Internet that do not cleanly fit this model (especially entailing real-time interaction). For those apps, you're better off building your own API (possibly taking a few cues from CouchDB), backed by a datastore whose feature set would better allow you to express the app's model.
 
+(CouchDB can also lend itself to apps like message boards, where each document is a message; however, this requires some special considerations, including ones that may not map simply for use with PouchDB, so it's kind of out-of-scope for this guide, at least at my current level of comprehension.)
+
 Also, CouchDB is one of those projects, like C++ or the Apache web server, where several different parties have implemented their own extensions to do specific things they wanted, which were then incorporated into the main project with little to no regard for how they make sense in the presence of other features. There are more than a few things you'll find that seem like cool ideas from a limited perspective, but turn out to be restrictive or actively harmful in the greater scheme of things.
 
 ## CouchDB's data model
@@ -30,7 +32,7 @@ The way CouchDB models access/ownership, each user or group of users usually hav
 
 Database names can be any string that matches the expression `^[a-z][a-z0-9_$()+/-]*$`, though using a database name with `/` in it will entail percent-escaping that slash in URLs for CouchDB's HTTP API (to distinguish it from the slash separating the database name from a document name).
 
-Document IDs may be any arbitrary string, though the normal convention is to use unhyphenated hexadecimal random UUIDs (this is what PouchDB and CouchDB generate by default). Not using random IDs can lead the B-Tree which holds the documents of a database to grow unbalanced.
+Document IDs may be any arbitrary string, though the normal convention is to use hexadecimal random UUIDs (this is what PouchDB and CouchDB generate by default, although CouchDB seems to omit hyphens while PouchDB includes them). Not using random IDs can lead the B-Tree which holds the documents of a database to grow unbalanced. (Nonetheless, the PouchDB documentation repeatedly implores users to generate their own non-random IDs, probably due to limitations of PouchDB's underlying implementation(s) regarding non-primary keys.)
 
 Also, note that documents with underscore-prefixed IDs are used for special kinds of document (such as "design documents", the server-side code structure described below, whose IDs begin with `_design/`, or the `_security` document in each database, which controls access to the database and is not versioned).
 
