@@ -1,6 +1,6 @@
 # CouchDB in a Hurry: for devs without time to relax
 
-This guide is about breezing through the high-level questions a developer, possibly familiar with how other database systems are traditionally used in web development, would need answered before being able to understand the average guide describing how to do something using CouchDB (and consequently with PouchDB). It puts special focus on clearing up the bits that would appear to be contradictory, especially preconceptions based on the way things work in other databases.
+This guide is about breezing through the high-level questions a developer, possibly familiar with how other database systems are traditionally used in web development, would need answered before being able to understand the average guide describing how to do something using CouchDB (and consequently with PouchDB). It puts special focus on clearing up the bits that would appear to be contradictory, especially regarding preconceptions based on the way things work in other databases.
 
 I wrote it because other CouchDB guides tend to miss the middle ground between "recapping things you already know in excruciatingly boring detail" and "assuming you are already a CouchDB contributor" (especially when it comes to resolving apparent contradictions), which is especially frustrating when you care more about learning to use PouchDB than reading a page and a half explaining how `curl` does HTTP requests.
 
