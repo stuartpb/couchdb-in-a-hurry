@@ -108,6 +108,8 @@ Views are map functions, optionally paired with a reduce function, that work kin
 
 This code is only allowed to be thread-safe, with no side effects (akin to a function you'd write for use in a Worker in front-end JavaScript). This is because map functions can and will be run in parallel for each document.
 
+It's important to note that map functions in CouchDB views are **not** like map functions in functional programming (ie. the kind you would pass to an array's `.map()` method), which strictly convert one input value to one output value. A map function in a CouchDB view produces results by calling `emit(i, v)`, and may do this zero, one, or many times, for *any* document. (Depending on your use case, your view's map function may only call `emit(i, v)` when given *one specific document in the database*, for which it will `emit()` *hundreds* of derived objects.) The results of a map function in a CouchDB view form a *new* set of derived points, indexed by the first parameter passed to `emit`, with (optional) derived values/documents (the second parameter to `emit`), *and* with the `_id` of the original input document implicitly attached (the document itself being optionally retrievable when querying the view).
+
 Map functions work for a combination of things you commonly need to do with data:
 
 - Selecting for only certain documents in the database
@@ -115,7 +117,7 @@ Map functions work for a combination of things you commonly need to do with data
 - Pivoting documents based on a value (ie. creating secondary indices)
 - Plucking only certain fields from a document
 
-A reduce function is for when you want to get a *single document or value* based on a range of emitted documents from the map function.
+A reduce function is for when you want to get a *single document or value* based on a range of emitted documents from the map function. In other words, reduce functions are for **summaries** of documents in the database, like counts, averages, or other statistics.
 
 #### Creating a secondary index with views
 
