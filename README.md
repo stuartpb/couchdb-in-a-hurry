@@ -129,7 +129,7 @@ There's a field on design docs called `validate_doc_update`, which contains the 
 
 When one of these creations or changes happen, the `validate_doc_update` function for every design document in the DB is run on the incoming document (in an undefined order), and if any of these design documents' validation functions reject the document, the doc is rejected.
 
-Validation functions aren't applied when creating/changing design documents themselves (because that would be crazy).
+Validation functions aren't applied when creating/changing design documents themselves (because, on top of design docs generally having a different structure from the rest of a database's docs, this could lead to a scenario where a bad validation function prevents an update to *fix* the validation function, which would effectively *brick your database*).
 
 The function takes the parameters `(newDoc, oldDoc, userCtx, secObj)`, where `newDoc` is the document coming in, `oldDoc` is any previous revision of the document (if we have any), `userCtx` is a context of data for the user that somehow comes from CouchDB's pluggable authentication system, and `secObj` is the object defined by the database's `_security` document.
 
