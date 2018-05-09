@@ -16,7 +16,9 @@ CouchDB is a natural base for apps where users have their own documents, which s
 
 (CouchDB can also lend itself to apps like message boards, where each document is a message; however, this requires some special considerations, including ones that may not map simply for use with PouchDB, so it's kind of out-of-scope for this guide, at least at my current level of comprehension.)
 
-Also, CouchDB is one of those projects, like C++ or the Apache web server, where several different parties have implemented their own extensions to do specific things they wanted, which were then incorporated into the main project with little to no regard for how they make sense in the presence of other features. There are more than a few things you'll find that seem like cool ideas from a limited perspective, but turn out to be restrictive or actively harmful in the greater scheme of things.
+Also, CouchDB is one of those projects, like C++ or the Apache web server, where several different parties have implemented their own extensions to do specific things they wanted, which were then incorporated into the main project with little to no regard for how they make sense in the presence of other features. (See also [the preface to the HTML Living Standard's "Design notes" section][HTML].) There are more than a few things you'll find that seem like cool ideas from a limited perspective, but turn out to be restrictive or actively harmful in the greater scheme of things.
+
+[HTML]: https://html.spec.whatwg.org/multipage/introduction.html#design-notes
 
 ## CouchDB's data model
 
